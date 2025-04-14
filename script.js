@@ -17,9 +17,7 @@ function convertToChineseCurrency(amount) {
   const mao = parts[1].charAt(0);
   const fen = parts[1].charAt(1);
 
-  let result = '';
-
-  result += `${kuai}块`;
+  let result = `${kuai}块`;
   if (mao !== '0') result += `${mao}毛`;
   if (fen !== '0') result += `${fen}分`;
 
@@ -32,8 +30,7 @@ function convertToSpanishCurrency(amount) {
   const pesos = parseInt(parts[0], 10);
   const centavos = parseInt(parts[1], 10);
 
-  let result = '';
-  result += `${numberToWords(pesos)} peso${pesos !== 1 ? 's' : ''}`;
+  let result = `${numberToWords(pesos)} peso${pesos !== 1 ? 's' : ''}`;
   if (centavos > 0) {
     result += ` con ${numberToWords(centavos)} centavo${centavos !== 1 ? 's' : ''}`;
   }
@@ -62,7 +59,7 @@ document.getElementById("generateBtn").addEventListener("click", () => {
   output.classList.replace("text-red-600", "text-green-600");
 });
 
-document.getElementById("speakBtn").addEventListener("touchstart", () => {
+function handleSpeak() {
   const outputText = document.getElementById("output").textContent;
   const language = document.getElementById("language").value;
   const unit = document.getElementById("unit").value.trim();
@@ -73,7 +70,7 @@ document.getElementById("speakBtn").addEventListener("touchstart", () => {
     return;
   }
 
-  // Cancel any ongoing speech to prevent mobile bug
+  // Cancel and delay to fix Android Web Speech bug
   window.speechSynthesis.cancel();
 
   const isCurrency = ["¥", "元", "块", "$", "€", "£"].includes(unit);
@@ -82,24 +79,33 @@ document.getElementById("speakBtn").addEventListener("touchstart", () => {
 
   if (language === 'zh-CN' && (isCurrency || speakAsCurrency)) {
     textToSpeak = convertToChineseCurrency(rawNumber);
-  } else if (language === 'es-419' && (isCurrency || speakAsCurrency)) {
+  } else if ((language === 'es-MX' || language === 'es-419') && (isCurrency || speakAsCurrency)) {
     textToSpeak = convertToSpanishCurrency(rawNumber);
   }
 
   const utterance = new SpeechSynthesisUtterance(textToSpeak);
   utterance.lang = language;
 
-  function speakWhenVoicesReady() {
+  const setVoiceAndSpeak = () => {
     const voices = window.speechSynthesis.getVoices();
     const match = voices.find(v => v.lang === language);
     if (match) utterance.voice = match;
-    window.speechSynthesis.resume();
-    window.speechSynthesis.speak(utterance);
-  }
+
+    // Delay helps Android work reliably
+    setTimeout(() => {
+      window.speechSynthesis.resume();
+      window.speechSynthesis.speak(utterance);
+    }, 200);
+  };
 
   if (speechSynthesis.getVoices().length === 0) {
-    speechSynthesis.onvoiceschanged = speakWhenVoicesReady;
+    speechSynthesis.onvoiceschanged = setVoiceAndSpeak;
   } else {
-    speakWhenVoicesReady();
+    setVoiceAndSpeak();
   }
-});
+}
+
+// Add both click and touchstart to ensure cross-device support
+const speakBtn = document.getElementById("speakBtn");
+speakBtn.addEventListener("click", handleSpeak);
+speakBtn.addEventListener("touchstart", handleSpeak);
