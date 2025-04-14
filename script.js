@@ -41,12 +41,25 @@ document.getElementById("speakBtn").addEventListener("click", () => {
     return;
   }
 
+  // Create a speech utterance
   const utterance = new SpeechSynthesisUtterance(output);
   utterance.lang = language;
 
+  // Wait for voices to load
   const voices = window.speechSynthesis.getVoices();
-  const match = voices.find(v => v.lang === language);
-  if (match) utterance.voice = match;
-
-  window.speechSynthesis.speak(utterance);
+  
+  if (voices.length === 0) {
+    // If voices are not loaded, listen for the event and then speak
+    window.speechSynthesis.onvoiceschanged = () => {
+      const voices = window.speechSynthesis.getVoices();
+      const match = voices.find(v => v.lang === language);
+      if (match) utterance.voice = match;
+      window.speechSynthesis.speak(utterance);
+    };
+  } else {
+    // Use the available voices
+    const match = voices.find(v => v.lang === language);
+    if (match) utterance.voice = match;
+    window.speechSynthesis.speak(utterance);
+  }
 });
