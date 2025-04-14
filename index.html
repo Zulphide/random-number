@@ -12,8 +12,13 @@
     
     <div class="space-y-2">
       <label class="block font-medium">Number of Digits</label>
-      <input id="digits" type="number" min="1" max="20" class="w-full border p-2 rounded" />
+      <input id="digits" type="number" min="1" max="10" value="2" class="w-full border p-2 rounded" />
     </div>
+
+    <div class="space-y-2">
+      <label class="block font-medium">Decimal Places</label>
+      <input id="decimals" type="number" min="0" max="2" value="0" class="w-full border p-2 rounded" />
+    </div>    
 
     <div class="space-y-2">
       <label class="block font-medium">Unit or Currency</label>
@@ -23,6 +28,18 @@
     <button id="generateBtn" class="bg-blue-600 hover:bg-blue-700 text-white w-full py-2 rounded">
       Generate
     </button>
+
+    <div class="space-y-2">
+      <label class="block font-medium">Language</label>
+      <select id="language" class="w-full border p-2 rounded">
+        <option value="zh-CN">Chinese (Mandarin)</option>
+        <option value="es-MX">Spanish (Latin America)</option>
+      </select>
+    </div>
+    
+    <button id="speakBtn" class="bg-green-600 hover:bg-green-700 text-white w-full py-2 rounded">
+      🔊 Speak
+    </button>    
 
     <div id="output" class="text-2xl font-bold text-center mt-4 text-green-600"></div>
   </div>
