@@ -70,9 +70,6 @@ function handleSpeak() {
     return;
   }
 
-  // Cancel and delay to fix Android Web Speech bug
-  window.speechSynthesis.cancel();
-
   const isCurrency = ["¥", "元", "块", "$", "€", "£"].includes(unit);
   const rawNumber = parseFloat(outputText.replace(/[^\d.-]/g, ''));
   let textToSpeak = outputText;
@@ -83,27 +80,22 @@ function handleSpeak() {
     textToSpeak = convertToSpanishCurrency(rawNumber);
   }
 
-  const utterance = new SpeechSynthesisUtterance(textToSpeak);
-  utterance.lang = language;
+  // Cancel any previous utterances
+  window.speechSynthesis.cancel();
 
-  const setVoiceAndSpeak = () => {
+  // Use setTimeout to workaround Android bug
+  setTimeout(() => {
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+    utterance.lang = language;
+
     const voices = window.speechSynthesis.getVoices();
     const match = voices.find(v => v.lang === language);
     if (match) utterance.voice = match;
 
-    // Delay helps Android work reliably
-    setTimeout(() => {
-      window.speechSynthesis.resume();
-      window.speechSynthesis.speak(utterance);
-    }, 200);
-  };
-
-  if (speechSynthesis.getVoices().length === 0) {
-    speechSynthesis.onvoiceschanged = setVoiceAndSpeak;
-  } else {
-    setVoiceAndSpeak();
-  }
+    window.speechSynthesis.speak(utterance);
+  }, 200); // Small delay to clear out canceled utterances
 }
+
 
 // Add both click and touchstart to ensure cross-device support
 const speakBtn = document.getElementById("speakBtn");
