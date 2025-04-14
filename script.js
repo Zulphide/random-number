@@ -41,7 +41,6 @@ function convertToSpanishCurrency(amount) {
 document.getElementById("generateBtn").addEventListener("click", () => {
   const digits = parseInt(document.getElementById("digits").value);
   const decimals = parseInt(document.getElementById("decimals").value) || 0;
-  const unit = document.getElementById("unit").value.trim();
   const output = document.getElementById("output");
 
   if (isNaN(digits) || digits < 1) {
@@ -51,11 +50,8 @@ document.getElementById("generateBtn").addEventListener("click", () => {
   }
 
   const randomNum = generateRandomNumber(digits, decimals);
-  const formatted = unit.startsWith('$') || unit.startsWith('€') || unit.startsWith('£') || unit.startsWith('¥')
-    ? `${unit}${randomNum}`
-    : `${randomNum}${unit ? ' ' + unit : ''}`;
 
-  output.textContent = formatted;
+  output.textContent = randomNum;
   output.classList.replace("text-red-600", "text-green-600");
 });
 
@@ -78,7 +74,6 @@ document.getElementById("decimals").addEventListener("touchstart", (e) => {
 function handleSpeak() {
   const outputText = document.getElementById("output").textContent;
   const language = document.getElementById("language").value;
-  const unit = document.getElementById("unit").value.trim();
   const speakAsCurrency = document.getElementById("speakAsCurrency")?.checked || false;
 
   if (!outputText) {
@@ -86,13 +81,12 @@ function handleSpeak() {
     return;
   }
 
-  const isCurrency = ["¥", "元", "块", "$", "€", "£"].includes(unit);
   const rawNumber = parseFloat(outputText.replace(/[^\d.-]/g, ''));
   let textToSpeak = outputText;
 
-  if (language === 'zh-CN' && (isCurrency || speakAsCurrency)) {
+  if (language === 'zh-CN' && speakAsCurrency) {
     textToSpeak = convertToChineseCurrency(rawNumber);
-  } else if ((language === 'es-MX' || language === 'es-419') && (isCurrency || speakAsCurrency)) {
+  } else if ((language === 'es-MX' || language === 'es-419') && speakAsCurrency) {
     textToSpeak = convertToSpanishCurrency(rawNumber);
   }
 
