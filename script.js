@@ -31,3 +31,22 @@ document.getElementById("generateBtn").addEventListener("click", () => {
   output.textContent = formatted;
   output.classList.replace("text-red-600", "text-green-600");
 });
+
+document.getElementById("speakBtn").addEventListener("click", () => {
+  const output = document.getElementById("output").textContent;
+  const language = document.getElementById("language").value;
+
+  if (!output) {
+    alert("Nothing to speak yet. Generate a number first.");
+    return;
+  }
+
+  const utterance = new SpeechSynthesisUtterance(output);
+  utterance.lang = language;
+
+  const voices = window.speechSynthesis.getVoices();
+  const match = voices.find(v => v.lang === language);
+  if (match) utterance.voice = match;
+
+  window.speechSynthesis.speak(utterance);
+});
