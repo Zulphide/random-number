@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random Number Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <div class="bg-white p-6 rounded-2xl shadow-md w-full max-w-md space-y-4">
+    <h1 class="text-2xl font-bold text-center">Random Number Generator</h1>
+    
+    <div class="space-y-2">
+      <label class="block font-medium">Number of Digits</label>
+      <input id="digits" type="number" min="1" max="20" class="w-full border p-2 rounded" />
+    </div>
+
+    <div class="space-y-2">
+      <label class="block font-medium">Unit or Currency</label>
+      <input id="unit" type="text" placeholder="e.g. $, kg, %" class="w-full border p-2 rounded" />
+    </div>
+
+    <button id="generateBtn" class="bg-blue-600 hover:bg-blue-700 text-white w-full py-2 rounded">
+      Generate
+    </button>
+
+    <div id="output" class="text-2xl font-bold text-center mt-4 text-green-600"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
