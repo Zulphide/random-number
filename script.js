@@ -62,7 +62,7 @@ document.getElementById("generateBtn").addEventListener("click", () => {
   output.classList.replace("text-red-600", "text-green-600");
 });
 
-document.getElementById("speakBtn").addEventListener("click", () => {
+document.getElementById("speakBtn").addEventListener("touchstart", () => {
   const outputText = document.getElementById("output").textContent;
   const language = document.getElementById("language").value;
   const unit = document.getElementById("unit").value.trim();
@@ -72,6 +72,9 @@ document.getElementById("speakBtn").addEventListener("click", () => {
     alert("Nothing to speak yet. Generate a number first.");
     return;
   }
+
+  // Cancel any ongoing speech to prevent mobile bug
+  window.speechSynthesis.cancel();
 
   const isCurrency = ["¥", "元", "块", "$", "€", "£"].includes(unit);
   const rawNumber = parseFloat(outputText.replace(/[^\d.-]/g, ''));
@@ -90,6 +93,7 @@ document.getElementById("speakBtn").addEventListener("click", () => {
     const voices = window.speechSynthesis.getVoices();
     const match = voices.find(v => v.lang === language);
     if (match) utterance.voice = match;
+    window.speechSynthesis.resume();
     window.speechSynthesis.speak(utterance);
   }
 
