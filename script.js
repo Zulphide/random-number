@@ -66,6 +66,14 @@ document.getElementById("digits").addEventListener("input", (e) => {
 document.getElementById("decimals").addEventListener("input", (e) => {
   document.getElementById("decimalsValue").textContent = e.target.value;
 });
+// Adding 'touchstart' and 'touchmove' for better mobile compatibility
+document.getElementById("digits").addEventListener("touchstart", (e) => {
+  document.getElementById("digitsValue").textContent = e.target.value;
+});
+
+document.getElementById("decimals").addEventListener("touchstart", (e) => {
+  document.getElementById("decimalsValue").textContent = e.target.value;
+});
 
 function handleSpeak() {
   const outputText = document.getElementById("output").textContent;
