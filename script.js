@@ -59,6 +59,14 @@ document.getElementById("generateBtn").addEventListener("click", () => {
   output.classList.replace("text-red-600", "text-green-600");
 });
 
+// Update displayed slider values
+document.getElementById("digits").addEventListener("input", (e) => {
+  document.getElementById("digitsValue").textContent = e.target.value;
+});
+document.getElementById("decimals").addEventListener("input", (e) => {
+  document.getElementById("decimalsValue").textContent = e.target.value;
+});
+
 function handleSpeak() {
   const outputText = document.getElementById("output").textContent;
   const language = document.getElementById("language").value;
@@ -101,4 +109,3 @@ function handleSpeak() {
 // Add both click and touchstart to ensure cross-device support
 const speakBtn = document.getElementById("speakBtn");
 speakBtn.addEventListener("click", handleSpeak);
-speakBtn.addEventListener("touchstart", handleSpeak);
