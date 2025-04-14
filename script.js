@@ -80,10 +80,10 @@ function handleSpeak() {
     textToSpeak = convertToSpanishCurrency(rawNumber);
   }
 
-  // Cancel any previous utterances
+  // Cancel and use delay to reset Android speech queue
   window.speechSynthesis.cancel();
 
-  // Use setTimeout to workaround Android bug
+  // Wait a tick before re-creating and speaking
   setTimeout(() => {
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.lang = language;
@@ -92,10 +92,11 @@ function handleSpeak() {
     const match = voices.find(v => v.lang === language);
     if (match) utterance.voice = match;
 
+    // Resume is sometimes needed on Android after cancel
+    window.speechSynthesis.resume();
     window.speechSynthesis.speak(utterance);
-  }, 200); // Small delay to clear out canceled utterances
+  }, 100); // small delay to allow speech engine to reset
 }
-
 
 // Add both click and touchstart to ensure cross-device support
 const speakBtn = document.getElementById("speakBtn");
